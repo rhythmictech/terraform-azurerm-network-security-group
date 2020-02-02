@@ -22,7 +22,7 @@ resource "azurerm_network_security_rule" "predefined_rules" {
   direction                   = element(var.rules[lookup(var.predefined_rules[count.index], "name")], 0)
   access                      = element(var.rules[lookup(var.predefined_rules[count.index], "name")], 1)
   protocol                    = element(var.rules[lookup(var.predefined_rules[count.index], "name")], 2)
-  source_port_ranges          = split(",", replace(lookup(var.predefined_rules[count.index], "source_port_range", "*"), "*", "0-65535"))
+  source_port_ranges          = split(",", lookup(var.predefined_rules[count.index], "source_port_range", "*"))
   destination_port_range      = element(var.rules[lookup(var.predefined_rules[count.index], "name")], 4)
   description                 = element(var.rules[lookup(var.predefined_rules[count.index], "name")], 5)
   source_address_prefix       = join(",", var.source_address_prefix)
@@ -42,8 +42,8 @@ resource "azurerm_network_security_rule" "custom_rules" {
   direction                   = lookup(var.custom_rules[count.index], "direction", "Any")
   access                      = lookup(var.custom_rules[count.index], "access", "Allow")
   protocol                    = lookup(var.custom_rules[count.index], "protocol", "*")
-  source_port_ranges          = split(",", replace(lookup(var.custom_rules[count.index], "source_port_range", "*"), "*", "0-65535"))
-  destination_port_ranges     = split(",", replace(lookup(var.custom_rules[count.index], "destination_port_range", "*"), "*", "0-65535"))
+  source_port_ranges          = split(",", lookup(var.custom_rules[count.index], "source_port_range", "*"))
+  destination_port_ranges     = split(",", lookup(var.custom_rules[count.index], "destination_port_range", "*"))
   # Only one source_address_prefixes, source_address_prefix, or source_application_security_group_ids may be used
   ## If we pass in a multi-valued CSV for source_address_prefix, use source_address_prefixes and split into a list
   source_address_prefixes     = length(split(",", lookup(var.custom_rules[count.index], "source_address_prefix", "*"))) > 1 ? split(",", lookup(var.custom_rules[count.index], "source_address_prefix", "*")) : null
