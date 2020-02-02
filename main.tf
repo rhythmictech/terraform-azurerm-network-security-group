@@ -48,7 +48,7 @@ resource "azurerm_network_security_rule" "custom_rules" {
   ## If we pass in a multi-valued CSV for source_address_prefix, use source_address_prefixes and split into a list
   source_address_prefixes     = length(split("," lookup(var.custom_rules[count.index], "source_address_prefix", "*"))) > 1 ? split(",", lookup(var.custom_rules[count.index], "source_address_prefix", "*")) : null
   ## If we pass in a source_application_security_group_ids parameter and If we pass in a multi-valued CSV for source_address_prefix, use source_address_prefixes and split into a list
-  source_address_prefix       = lookup(var.custom_rules[count.index], "source_application_security_group_ids", "") = "" ? null : ${length(split(",", lookup(var.custom_rules[count.index], "source_address_prefix", "*"))) == 1 : lookup(var.custom_rules[count.index], "source_address_prefix", "*") : null}
+  source_address_prefix       = lookup(var.custom_rules[count.index], "source_application_security_group_ids", "") = "" ? null : (length(split(",", lookup(var.custom_rules[count.index], "source_address_prefix", "*"))) == 1 : lookup(var.custom_rules[count.index], "source_address_prefix", "*") : null)
   source_application_security_group_ids = lookup(var.custom_rules[count.index], "source_application_security_group_ids", "") == "" ? null : split(",", lookup(var.custom_rules[count.index], "source_application_security_group_ids", ""))
   destination_address_prefix  = lookup(var.custom_rules[count.index], "destination_address_prefix", "*")
   description                 = lookup(var.custom_rules[count.index], "description", "Security rule for ${lookup(var.custom_rules[count.index], "name", "default_rule_name")}")
